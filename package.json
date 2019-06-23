@@ -1,0 +1,169 @@
+{
+    "name": "jira-aux",
+    "displayName": "Jira Helper",
+    "description": "List and view your issues and create Git-flow like branches from them",
+    "version": "1.0.0",
+    "author": "Semih Onay",
+    "publisher": "SemihOnay",
+    "engines": {
+        "vscode": "^1.35.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "icon": "assets/icons/logo.png",
+    "homepage": "https://github.com/Semyonic/jira-aux/blob/master/README.md",
+    "bugs": {
+        "url": "https://github.com/Semyonic/jira-aux/issues",
+        "email": "semih.onay@bilgiedu.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Semyonic/jira-aux"
+    },
+    "license": "MIT",
+    "keywords": [
+        "jira",
+        "issues",
+        "bugs"
+    ],
+    "activationEvents": [
+        "onView:jiraAux"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "jiraAux",
+                    "title": "Issues",
+                    "icon": "assets/icons/issues.svg"
+                }
+            ]
+        },
+        "views": {
+            "jiraAux": [
+                {
+                    "id": "jiraAux",
+                    "name": ""
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "jiraAux.showDescription",
+                "title": "Show Issue Details"
+            },
+            {
+                "command": "jiraAux.refresh",
+                "title": "Refresh",
+                "icon": {
+                    "light": "assets/icons/light/refresh.svg",
+                    "dark": "assets/icons/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "jiraAux.openIssue",
+                "title": "Open Issue"
+            },
+            {
+                "command": "jiraAux.createBranch",
+                "title": "Create Branch"
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "jiraAux.refresh",
+                    "when": "view == jiraAux",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "jiraAux.openIssue",
+                    "when": "view == jiraAux && viewItem == issue",
+                    "group": "navigation"
+                },
+                {
+                    "command": "jiraAux.showDescription",
+                    "when": "view == jiraAux && viewItem == issue",
+                    "group": "navigation"
+                },
+                {
+                    "command": "jiraAux.createBranch",
+                    "when": "view == jiraAux && viewItem == issue",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Jira configuration",
+            "properties": {
+                "jira.baseUrl": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": "",
+                    "description": "JIRA installation URL. Ex: https://jira.your-company.com"
+                },
+                "jira.port": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": "443",
+                    "description": "Port number of baseUrl, default is 443"
+                },
+                "jira.username": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": "",
+                    "description": "JIRA username"
+                },
+                "jira.password": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": "",
+                    "description": "JIRA password"
+                },
+                "jira.jqlExpression": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": "assignee = currentUser() AND resolution = EMPTY ORDER BY Rank ASC",
+                    "description": "Provide your custom JQL expression to filter issues. Default filter shows all assigned and unresolved issues of current user"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "yarn run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "yarn run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.0.10",
+        "@types/open": "^6.1.0",
+        "@types/prettier": "^1.16.4",
+        "prettier": "^1.18.2",
+        "tslint": "^5.18.0",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.5.2",
+        "vscode": "^1.1.34"
+    },
+    "dependencies": {
+        "jira-client": "^6.8.0",
+        "open": "^6.3.0"
+    }
+}

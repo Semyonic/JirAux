@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"ms-vscode.vscode-typescript-tslint-plugin",
+		"EditorConfig.EditorConfig",
+		"IBM.output-colorizer",
+		"jvitor83.types-autoinstaller"
+	]
+}

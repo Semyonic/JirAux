@@ -1,0 +1,48 @@
+{
+    "extends": ["tslint-config-prettier"],
+    "rules": {
+        "no-string-throw": true,
+        "no-duplicate-variable": true,
+        "no-consecutive-blank-lines": true,
+        "no-bitwise": true,
+        "no-arg": true,
+        "switch-default": true,
+        "deprecation": true,
+        "arrow-return-shorthand": true,
+        "class-name": {
+            "severity": "error"
+        },
+        "import-spacing": {
+            "severity": "error"
+        },
+        "linebreak-style": true,
+        "no-trailing-whitespace": true,
+        "member-access": true,
+        "curly": true,
+        "cyclomatic-complexity": {
+            "severity": "warning"
+        },
+        "no-debugger": true,
+        "no-duplicate-imports": {
+            "severity": "error"
+        },
+        "no-empty-interface": true,
+        "variable-name": {
+            "options": [
+                "check-format"
+            ],
+            "severity": "warning"
+        },
+        "no-shadowed-variable": {
+            "severity": "warning"
+        },
+        "semicolon": {
+            "options": "always",
+            "severity": "error"
+        },
+        "triple-equals": {
+            "severity": "error"
+        }
+    },
+    "defaultSeverity": "warning"
+}
