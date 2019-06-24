@@ -42,7 +42,7 @@
             ]
         },
         "views": {
-            "jiraAux": [
+            "JirAux": [
                 {
                     "id": "JirAux",
                     "name": ""
