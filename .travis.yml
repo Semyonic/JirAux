@@ -36,7 +36,7 @@ deploy:
   file: "*.vsix"
   skip_cleanup: true
   on:
-    repo: Semyonic/jira-aux
+    repo: Semyonic/JirAux
     branch: master
     tags: true
     condition: $TRAVIS_OS_NAME = linux
@@ -44,7 +44,7 @@ deploy:
   script: vsce publish -p $VS_TOKEN
   skip_cleanup: true
   on:
-    repo: Semyonic/jira-aux
+    repo: Semyonic/JirAux
     branch: master
     tags: true
     condition: $TRAVIS_OS_NAME = linux

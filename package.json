@@ -1,6 +1,6 @@
 {
-    "name": "jira-aux",
-    "displayName": "Jira Helper",
+    "name": "jiraux",
+    "displayName": "JirAux",
     "description": "List and view your issues and create Git-flow like branches from them",
     "version": "1.0.0",
     "author": "Semih Onay",
@@ -28,14 +28,14 @@
         "bugs"
     ],
     "activationEvents": [
-        "onView:jiraAux"
+        "onView:JirAux"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "viewsContainers": {
             "activitybar": [
                 {
-                    "id": "jiraAux",
+                    "id": "JirAux",
                     "title": "Issues",
                     "icon": "assets/icons/issues.svg"
                 }
@@ -44,18 +44,18 @@
         "views": {
             "jiraAux": [
                 {
-                    "id": "jiraAux",
+                    "id": "JirAux",
                     "name": ""
                 }
             ]
         },
         "commands": [
             {
-                "command": "jiraAux.showDescription",
+                "command": "JirAux.showDescription",
                 "title": "Show Issue Details"
             },
             {
-                "command": "jiraAux.refresh",
+                "command": "JirAux.refresh",
                 "title": "Refresh",
                 "icon": {
                     "light": "assets/icons/light/refresh.svg",
@@ -63,36 +63,36 @@
                 }
             },
             {
-                "command": "jiraAux.openIssue",
+                "command": "JirAux.openIssue",
                 "title": "Open Issue"
             },
             {
-                "command": "jiraAux.createBranch",
+                "command": "JirAux.createBranch",
                 "title": "Create Branch"
             }
         ],
         "menus": {
             "view/title": [
                 {
-                    "command": "jiraAux.refresh",
-                    "when": "view == jiraAux",
+                    "command": "JirAux.refresh",
+                    "when": "view == JirAux",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
-                    "command": "jiraAux.openIssue",
-                    "when": "view == jiraAux && viewItem == issue",
+                    "command": "JirAux.openIssue",
+                    "when": "view == JirAux && viewItem == issue",
                     "group": "navigation"
                 },
                 {
-                    "command": "jiraAux.showDescription",
-                    "when": "view == jiraAux && viewItem == issue",
+                    "command": "JirAux.showDescription",
+                    "when": "view == JirAux && viewItem == issue",
                     "group": "navigation"
                 },
                 {
-                    "command": "jiraAux.createBranch",
-                    "when": "view == jiraAux && viewItem == issue",
+                    "command": "JirAux.createBranch",
+                    "when": "view == JirAux && viewItem == issue",
                     "group": "navigation"
                 }
             ]

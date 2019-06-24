@@ -24,7 +24,7 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private lastFetch: number;
 
     constructor(private context: vscode.ExtensionContext) {
-        const appName = 'jiraAux';
+        const appName = 'JirAux';
         const appCommands = {
             CreateBranch: {
                 Name: `${appName}.createBranch`,

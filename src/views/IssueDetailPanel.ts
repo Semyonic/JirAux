@@ -4,7 +4,7 @@ import { IssueItem } from '../models/interfaces';
 
 export class IssueDetailPanel {
     public static currentPanel: IssueDetailPanel | undefined;
-    public static readonly viewType = 'jiraAux';
+    public static readonly viewType = 'JirAux';
     private readonly panel: vscode.WebviewPanel;
     private readonly extensionPath: string;
     private disposables: vscode.Disposable[] = [];
