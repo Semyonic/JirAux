@@ -15,12 +15,6 @@ export class IssueDetailPanel {
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
 
-        // If we already have a panel, show it.
-        if (IssueDetailPanel.currentPanel) {
-            IssueDetailPanel.currentPanel.panel.reveal(column);
-            return;
-        }
-
         // Otherwise, create a new panel.
         const panel = vscode.window.createWebviewPanel(
             IssueDetailPanel.viewType,
@@ -39,7 +33,7 @@ export class IssueDetailPanel {
         IssueDetailPanel.currentPanel = new IssueDetailPanel(panel, extensionPath);
     }
 
-    private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
+    constructor(panel: vscode.WebviewPanel, extensionPath: string) {
         this.panel = panel;
         this.extensionPath = extensionPath;
 
@@ -131,8 +125,6 @@ export class IssueDetailPanel {
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="description" content="">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <link rel="icon" href="" type="image/svg+xml" />
-                <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
             </head>
             <body>
             <header>

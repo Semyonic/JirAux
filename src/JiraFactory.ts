@@ -22,6 +22,7 @@ function instantiateJira(config: ExtensionConfig) {
         port: config.port,
         username: config.username,
         password: config.password,
+        poll: config.poll,
         apiVersion: '2',
         strictSSL: false,
     };

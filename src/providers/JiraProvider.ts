@@ -5,10 +5,12 @@ import jiraFactory from '../JiraFactory';
 import { ExtensionConfig, IssueItem, IssueTypes, JiraResponse } from '../models/interfaces';
 import { JiraIssue } from '../models/JiraIssue';
 import { IssueDetailPanel } from '../views';
+
 let jiraClient: { loadError: any; searchWithQueryFromConfig?: any };
+let config: vscode.WorkspaceConfiguration;
 
 try {
-    const config = vscode.workspace.getConfiguration('jira');
+    config = vscode.workspace.getConfiguration('jira');
     jiraClient = jiraFactory.instantiateJira(config);
 } catch (error) {
     jiraClient = {
@@ -118,9 +120,7 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
             const data: JiraResponse = await jiraClient.searchWithQueryFromConfig();
             const total = data.issues.length;
 
-            data.total > 0
-                ? vscode.window.showInformationMessage(`You got ${total} tasks`)
-                : vscode.window.showInformationMessage(`No issues, enjoy your day !`);
+            // data.total > 0 ? '' : vscode.window.showInformationMessage(`No issues, enjoy your day !`);
 
             let children: JiraIssue[] = [];
             const promises = data.issues.map(async (issue: IssueItem) => {
@@ -143,11 +143,11 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         }
     }
 
-    private async refresh(config?: ExtensionConfig): Promise<void> {
+    private async refresh(configuration?: ExtensionConfig): Promise<void> {
         if (!this.fetching) {
-            if (config) {
+            if (configuration) {
                 try {
-                    jiraClient = jiraFactory.instantiateJira(config);
+                    jiraClient = jiraFactory.instantiateJira(configuration);
                 } catch (error) {
                     jiraClient = {
                         loadError: error.message,
@@ -160,21 +160,21 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     }
 
     private async poll(): Promise<void> {
-        const thirtyMinutes = 30 * 60 * 1000;
-        if (!this.lastFetch || this.lastFetch + thirtyMinutes < Date.now()) {
+        if (!this.lastFetch || this.lastFetch + config.poll < Date.now()) {
             return this.refresh();
         }
     }
 
     private openIssue(issue: JiraIssue): void {
-        const base = issue.item.self
-            .split('/rest')
-            .entries()
-            .next().value;
-        vscode.commands.executeCommand(
-            'vscode.open',
-            vscode.Uri.parse(`${base}/browse/${issue.item.key}`),
-        );
+        const base = issue.item.self.split('/rest')[0];
+        try {
+            vscode.commands.executeCommand(
+                'vscode.open',
+                vscode.Uri.parse(`${base}/browse/${issue.item.key}`),
+            );
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     private showDescription({ item }: JiraIssue): void {
@@ -194,22 +194,31 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         const switchAndCreate: any = await childProc.exec(
             `cd ${vscode.workspace.rootPath} && git fetch && git checkout -b ${branchName}`,
         );
-        switchAndCreate.stderr.on('data', async x => {
-            if (x.includes('already')) {
-                try {
-                    await this.switchBranch(branchName);
-                    return await vscode.window.showInformationMessage(
-                        `Switched to branch ${branchName}`,
-                    );
-                } catch (err) {
-                    vscode.window.showErrorMessage(err);
+        try {
+            switchAndCreate.stderr.on('data', async x => {
+                if (x.includes('already')) {
+                    try {
+                        await this.switchBranch(branchName);
+                        return await vscode.window.showInformationMessage(
+                            `Switched to branch ${branchName}`,
+                        );
+                    } catch (error) {
+                        console.error(error);
+                        vscode.window.showErrorMessage(error);
+                    }
                 }
-            }
-            vscode.window.showInformationMessage(`${branchName} created and switched`);
-        });
+                vscode.window.showInformationMessage(`${branchName} created and switched`);
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     private async switchBranch(branchName: string): Promise<void> {
-        await childProc.exec(`cd ${vscode.workspace.rootPath} && git checkout ${branchName}`);
+        try {
+            await childProc.exec(`cd ${vscode.workspace.rootPath} && git checkout ${branchName}`);
+        } catch (error) {
+            console.error(error);
+        }
     }
 }

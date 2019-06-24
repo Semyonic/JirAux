@@ -2,7 +2,7 @@
     "name": "jiraux",
     "displayName": "JirAux",
     "description": "List and view your issues and create Git-flow like branches from them",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "Semih Onay",
     "publisher": "SemihOnay",
     "engines": {
@@ -132,6 +132,14 @@
                     ],
                     "default": "",
                     "description": "JIRA password"
+                },
+                "jira.poll": {
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "default": 1800000,
+                    "description": "Polling frequency in miliseconds"
                 },
                 "jira.jqlExpression": {
                     "type": [

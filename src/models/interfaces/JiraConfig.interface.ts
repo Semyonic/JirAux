@@ -4,6 +4,7 @@ export interface JiraConfig {
     port?: string;
     username: string;
     password: string;
+    poll?: number;
     apiVersion?: string;
     strictSSL?: boolean;
     jql?: string;
