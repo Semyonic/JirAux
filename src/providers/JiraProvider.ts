@@ -2,7 +2,7 @@ import childProc = require('child_process');
 import * as path from 'path';
 import * as vscode from 'vscode';
 import jiraFactory from '../JiraFactory';
-import { ExtensionConfig, IssueItem, IssueTypes, JiraResponse } from '../models/interfaces';
+import { BranchTypes, ExtensionConfig, IssueItem, IssueTypes, JiraResponse } from '../models/interfaces';
 import { JiraIssue } from '../models/JiraIssue';
 import { IssueDetailPanel } from '../views';
 
@@ -100,12 +100,8 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     }
 
     private getIcons(jiraIssue: JiraIssue): void {
-        const issueType = jiraIssue.item.fields.issuetype.name.includes(
-            IssueTypes.Bug || IssueTypes.SubBug,
-        )
-            ? 'bug'
-            : 'task';
-        const icon = `${issueType}.svg`;
+        const issueTypes: IssueTypes = jiraIssue.item.fields.issuetype.name;
+        const icon = `${this.getIssueType(issueTypes).toLowerCase()}.svg`;
         jiraIssue.iconPath = {
             dark: this.context.asAbsolutePath(path.join('assets', 'icons', 'dark', icon)),
             light: this.context.asAbsolutePath(path.join('assets', 'icons', 'light', icon)),
@@ -181,6 +177,23 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         IssueDetailPanel.createOrShow(this.context.extensionPath, item);
     }
 
+    private getIssueType(issueType: IssueTypes): BranchTypes {
+        const conf = config.get('issueTypes') as { bugs; issues };
+        switch (issueType) {
+            case IssueTypes.Bug ||
+                IssueTypes.SubBug ||
+                conf.bugs.includes(issueType.toLocaleLowerCase()):
+                return BranchTypes.BugFix;
+            case IssueTypes.Story ||
+                IssueTypes.Task ||
+                IssueTypes.SubTask ||
+                conf.issues.includes(issueType.toLocaleLowerCase()):
+                return BranchTypes.Feature;
+            default:
+                return BranchTypes.Default;
+        }
+    }
+
     private async createBranch({
         item: {
             key,
@@ -189,8 +202,7 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
             },
         },
     }: JiraIssue): Promise<void> {
-        const branchName =
-            name === IssueTypes.Bug || IssueTypes.SubBug ? `fix/${key}` : `feature/${key}`;
+        const branchName = `${this.getIssueType(name)}/${key}`;
         const switchAndCreate: any = await childProc.exec(
             `cd ${vscode.workspace.rootPath} && git fetch && git checkout -b ${branchName}`,
         );

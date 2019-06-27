@@ -15,6 +15,14 @@ Define the following settings in your **settings.json** :
 - `jira.username`
 - `jira.password`
 
+Ex:
+
+```json
+"jira.baseUrl": "https://jira.your-company.com",
+"jira.username": "myMail@domain.com",
+"jira.password": "secretPassword",
+```
+
 ## Contributing
 
 File bugs and feature requests in [GitHub Issues](https://github.com/Semyonic/JirAux/issues).

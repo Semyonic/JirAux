@@ -9,11 +9,12 @@ export interface JiraResponse {
 export interface FieldProp {
     self: string;
     id: string;
-    name: string;
+    name: string | any;
     iconUrl: string;
 }
 
 export interface Status extends Partial<FieldProp> {
+    name: IssueTypes;
     description: string;
 }
 
@@ -56,10 +57,17 @@ export interface IssueItem extends FieldProp {
     fields: Fields;
 }
 
-export enum IssueTypes {
+export const enum IssueTypes {
     Task = 'Task',
+    SubTask = 'Sub-Task',
     Bug = 'Bug',
     SubBug = 'Sub-Bug',
-    SubGelistirme = 'Sub-Gelistirme',
     Story = 'Story',
+}
+
+export const enum BranchTypes {
+    Default = '',
+    BugFix = 'fix',
+    Feature = 'feature',
+    HotFix = 'hotfix'
 }
