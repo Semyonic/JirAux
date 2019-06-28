@@ -148,7 +148,7 @@
                         "null"
                     ],
                     "default": "assignee = currentUser() AND resolution = EMPTY ORDER BY Rank ASC",
-                    "description": "Yur custom JQL expression to filter issues"
+                    "description": "Your custom JQL expression"
                 },
                 "jira.issueTypes": {
                     "properties": {
@@ -159,6 +159,7 @@
                             "maxItems": 10,
                             "default": [
                                 "Bug",
+                                "Defect",
                                 "Sub-Bug"
                             ]
                         },
@@ -169,6 +170,7 @@
                             "maxItems": 10,
                             "default": [
                                 "Task",
+                                "To-Do",
                                 "Sub-Task"
                             ]
                         }
