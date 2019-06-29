@@ -8,7 +8,7 @@ import { IssueDetailPanel } from '../views';
 
 let jiraClient: { loadError: any; searchWithQueryFromConfig?: any };
 let config: vscode.WorkspaceConfiguration;
-let declarations: { bugs; issues };
+let declarations: { bugs ,issues };
 
 try {
     config = vscode.workspace.getConfiguration('jira');
@@ -202,7 +202,7 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
                 } else if (message.includes('switched')) {
                     return vscode.window.showInformationMessage(message);
                 } else {
-                    vscode.window.showInformationMessage(message);
+                    vscode.window.showErrorMessage(message);
                 }
             });
         } catch (error) {
