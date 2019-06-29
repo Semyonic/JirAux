@@ -43,9 +43,9 @@ export class IssueDetailPanel {
 
         this.panel.onDidChangeViewState(
             _ => {
-                if (this.panel.visible) {
+                /* if (this.panel.visible) {
                     this.update();
-                }
+                } */
             },
             null,
             this.disposables,

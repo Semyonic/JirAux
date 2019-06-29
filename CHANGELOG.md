@@ -1,5 +1,23 @@
 # Change Log
 
+## [1.0.2] - 2019-06-28
+
+## Added
+- New issue type settings option
+- Workspace/Folder detection from active tab
+- Story task type icons
+
+## Changed
+- Multiple issue view support ehanced
+- Branch switching notifications adjusted
+
+## Fixes
+- Open Issue functionality
+- Error control statement refactors
+- Performance tweaks
+
+#
+
 ## [1.0.1] - 2019-06-24
 
 ## Added
@@ -16,10 +34,12 @@
 - Open Issue functionality
 - More error controls added
 
+#
 
 ## [1.0.0] - 2019-06-23
 
 - Initial release
 
+[1.0.2]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.2
 [1.0.1]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.0
