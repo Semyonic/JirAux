@@ -2,7 +2,7 @@
     "name": "jiraux",
     "displayName": "JirAux",
     "description": "List and view your issues and create Git-flow like branches from them",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "author": "Semih Onay",
     "publisher": "SemihOnay",
     "engines": {
@@ -111,11 +111,11 @@
                 },
                 "jira.port": {
                     "type": [
-                        "string",
+                        "number",
                         "null"
                     ],
-                    "default": "443",
-                    "description": "Port number of baseUrl, default is 443"
+                    "default": 443,
+                    "description": "Port number"
                 },
                 "jira.username": {
                     "type": [
@@ -139,6 +139,7 @@
                         "null"
                     ],
                     "default": 1800000,
+                    "minimum": 600000,
                     "description": "Polling frequency in miliseconds"
                 },
                 "jira.jqlExpression": {
@@ -147,7 +148,35 @@
                         "null"
                     ],
                     "default": "assignee = currentUser() AND resolution = EMPTY ORDER BY Rank ASC",
-                    "description": "Provide your custom JQL expression to filter issues. Default filter shows all assigned and unresolved issues of current user"
+                    "description": "Your custom JQL expression"
+                },
+                "jira.issueTypes": {
+                    "properties": {
+                        "bugs": {
+                            "type": "array",
+                            "description": "List of BUG names",
+                            "uniqueItems": true,
+                            "maxItems": 10,
+                            "default": [
+                                "Bug",
+                                "Defect",
+                                "Sub-Bug"
+                            ]
+                        },
+                        "issues": {
+                            "type": "array",
+                            "description": "List of TASK names",
+                            "uniqueItems": true,
+                            "maxItems": 10,
+                            "default": [
+                                "Task",
+                                "To-Do",
+                                "Sub-Task"
+                            ]
+                        }
+                    },
+                    "description": "Custom issue and bug names",
+                    "default": {}
                 }
             }
         }

@@ -2,15 +2,17 @@ import childProc = require('child_process');
 import * as path from 'path';
 import * as vscode from 'vscode';
 import jiraFactory from '../JiraFactory';
-import { ExtensionConfig, IssueItem, IssueTypes, JiraResponse } from '../models/interfaces';
+import { BranchTypes, ExtensionConfig, IssueItem, IssueTypes, JiraResponse } from '../models/interfaces';
 import { JiraIssue } from '../models/JiraIssue';
 import { IssueDetailPanel } from '../views';
 
 let jiraClient: { loadError: any; searchWithQueryFromConfig?: any };
 let config: vscode.WorkspaceConfiguration;
+let declarations: { bugs; issues };
 
 try {
     config = vscode.workspace.getConfiguration('jira');
+    declarations = config.get('issueTypes') as { bugs; issues };
     jiraClient = jiraFactory.instantiateJira(config);
 } catch (error) {
     jiraClient = {
@@ -24,56 +26,34 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
     private fetching: boolean = false;
     private lastFetch: number;
+    private totalCount: number;
 
     constructor(private context: vscode.ExtensionContext) {
         const appName = 'JirAux';
-        const appCommands = {
-            CreateBranch: {
+        const appCommands = [
+            {
                 Name: `${appName}.createBranch`,
                 Reference: this.createBranch,
             },
-            Open: {
+            {
                 Name: `${appName}.openIssue`,
                 Reference: this.openIssue,
             },
-            Refresh: {
+            {
                 Name: `${appName}.refresh`,
                 Reference: this.refresh,
             },
-            ShowDetail: {
+            {
                 Name: `${appName}.showDescription`,
                 Reference: this.showDescription,
             },
-        };
+        ];
 
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
-                appCommands.Refresh.Name,
-                appCommands.Refresh.Reference,
-                this,
-            ),
-        );
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
-                appCommands.Open.Name,
-                appCommands.Open.Reference,
-                this,
-            ),
-        );
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
-                appCommands.CreateBranch.Name,
-                appCommands.CreateBranch.Reference,
-                this,
-            ),
-        );
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
-                appCommands.ShowDetail.Name,
-                appCommands.ShowDetail.Reference,
-                this,
-            ),
-        );
+        appCommands.map(command => {
+            context.subscriptions.push(
+                vscode.commands.registerCommand(command.Name, command.Reference, this),
+            );
+        });
 
         // Check changes from JIRA
         context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(this.poll, this));
@@ -100,12 +80,8 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     }
 
     private getIcons(jiraIssue: JiraIssue): void {
-        const issueType = jiraIssue.item.fields.issuetype.name.includes(
-            IssueTypes.Bug || IssueTypes.SubBug,
-        )
-            ? 'bug'
-            : 'task';
-        const icon = `${issueType}.svg`;
+        const issueTypes: IssueTypes = jiraIssue.item.fields.issuetype.name;
+        const icon = `${this.getIssueType(issueTypes).toLowerCase()}.svg`;
         jiraIssue.iconPath = {
             dark: this.context.asAbsolutePath(path.join('assets', 'icons', 'dark', icon)),
             light: this.context.asAbsolutePath(path.join('assets', 'icons', 'light', icon)),
@@ -118,9 +94,7 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         }
         try {
             const data: JiraResponse = await jiraClient.searchWithQueryFromConfig();
-            const total = data.issues.length;
-
-            // data.total > 0 ? '' : vscode.window.showInformationMessage(`No issues, enjoy your day !`);
+            this.totalCount = data.issues.length;
 
             let children: JiraIssue[] = [];
             const promises = data.issues.map(async (issue: IssueItem) => {
@@ -152,6 +126,7 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
                     jiraClient = {
                         loadError: error.message,
                     };
+                    vscode.window.showErrorMessage(error);
                 }
             }
             await this.getChildren();
@@ -181,6 +156,33 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         IssueDetailPanel.createOrShow(this.context.extensionPath, item);
     }
 
+    private getIssueType(issueType: IssueTypes): IssueTypes {
+        let result;
+
+        if (declarations.hasOwnProperty('bugs' || 'issues')) {
+            if (declarations.bugs.includes(issueType)) {
+                result = IssueTypes.Bug;
+            } else if (declarations.issues.includes(issueType)) {
+                result = IssueTypes.Task;
+            } else if (issueType === IssueTypes.Story) {
+                result = IssueTypes.Story;
+            } else {
+                result = IssueTypes.Task;
+            }
+        } else {
+            if (issueType === IssueTypes.Bug || issueType === IssueTypes.SubBug) {
+                result = IssueTypes.Bug;
+            } else if (issueType === IssueTypes.Task || issueType === IssueTypes.SubTask) {
+                result = IssueTypes.Task;
+            } else if (issueType === IssueTypes.Story) {
+                result = IssueTypes.Story;
+            } else {
+                result = IssueTypes.Task;
+            }
+        }
+        return result;
+    }
+
     private async createBranch({
         item: {
             key,
@@ -189,28 +191,50 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
             },
         },
     }: JiraIssue): Promise<void> {
-        const branchName =
-            name === IssueTypes.Bug || IssueTypes.SubBug ? `fix/${key}` : `feature/${key}`;
+        const branchName = `${this.getBranchPrefix(this.getIssueType(name))}/${key}`;
+        const editor = vscode.window.activeTextEditor;
+        let focusedDir;
+        try {
+            focusedDir = path.dirname(editor!.document.uri.path);
+        } catch (error) {
+            vscode.window.showErrorMessage(error);
+        }
+
         const switchAndCreate: any = await childProc.exec(
-            `cd ${vscode.workspace.rootPath} && git fetch && git checkout -b ${branchName}`,
+            `cd ${focusedDir} && git fetch && git checkout -b ${branchName}`,
         );
         try {
-            switchAndCreate.stderr.on('data', async x => {
-                if (x.includes('already')) {
+            switchAndCreate.stderr.on('data', async message => {
+                if (message.includes('already')) {
                     try {
                         await this.switchBranch(branchName);
                         return await vscode.window.showInformationMessage(
                             `Switched to branch ${branchName}`,
                         );
                     } catch (error) {
-                        console.error(error);
                         vscode.window.showErrorMessage(error);
                     }
+                } else if (message.includes('switched')) {
+                    return vscode.window.showInformationMessage(message);
+                } else {
+                    vscode.window.showErrorMessage(message);
                 }
-                vscode.window.showInformationMessage(`${branchName} created and switched`);
             });
         } catch (error) {
-            console.error(error);
+            vscode.window.showErrorMessage(error);
+        }
+    }
+
+    private getBranchPrefix(type: IssueTypes): BranchTypes {
+        switch (type) {
+            case IssueTypes.Bug:
+                return BranchTypes.BugFix;
+            case IssueTypes.Task:
+                return BranchTypes.Feature;
+            case IssueTypes.Story:
+                return BranchTypes.Feature;
+            default:
+                return BranchTypes.Default;
         }
     }
 
