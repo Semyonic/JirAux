@@ -10,8 +10,6 @@ export function activate(context: vscode.ExtensionContext) {
             IssueDetailPanel.revive(webviewPanel, context.extensionPath);
         },
     });
-
-    // context.subscriptions.push(disposable);
 }
 
 export function deactivate() {}

@@ -15,6 +15,18 @@ Define the following settings in your **settings.json** :
 - `jira.username`
 - `jira.password`
 
+Example:
+
+```json
+"jira.baseUrl": "https://jira.your-company.com",
+"jira.username": "myMail@domain.com",
+"jira.password": "secretPassword",
+"jira.issueTypes": {
+    "bugs": ["Bug","Sub-Bug","Defect", "Hata"],
+    "issues": ["Task","Sub-Task","Sub-Gelistirme","Gelistirme"]
+  },
+```
+
 ## Contributing
 
 File bugs and feature requests in [GitHub Issues](https://github.com/Semyonic/JirAux/issues).
