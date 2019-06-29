@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.0.3] - 2019-06-29
+
+## Fixes
+- Default issue types added for non configurative options
+
+#
+
 ## [1.0.2] - 2019-06-28
 
 ## Added
@@ -40,6 +47,7 @@
 
 - Initial release
 
+[1.0.3]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.3
 [1.0.2]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.2
 [1.0.1]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Semyonic/jira-aux/releases/tag/v1.0.0
