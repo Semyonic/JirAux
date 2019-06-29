@@ -8,7 +8,7 @@ import { IssueDetailPanel } from '../views';
 
 let jiraClient: { loadError: any; searchWithQueryFromConfig?: any };
 let config: vscode.WorkspaceConfiguration;
-let declarations: { bugs ,issues };
+let declarations: { bugs; issues };
 
 try {
     config = vscode.workspace.getConfiguration('jira');
@@ -157,15 +157,30 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     }
 
     private getIssueType(issueType: IssueTypes): IssueTypes {
-        if (declarations.bugs.includes(issueType)) {
-            return IssueTypes.Bug;
-        } else if (declarations.issues.includes(issueType)) {
-            return IssueTypes.Task;
-        } else if (issueType === IssueTypes.Story) {
-            return IssueTypes.Story;
+        let result;
+
+        if (declarations.hasOwnProperty('bugs' || 'issues')) {
+            if (declarations.bugs.includes(issueType)) {
+                result = IssueTypes.Bug;
+            } else if (declarations.issues.includes(issueType)) {
+                result = IssueTypes.Task;
+            } else if (issueType === IssueTypes.Story) {
+                result = IssueTypes.Story;
+            } else {
+                result = IssueTypes.Task;
+            }
         } else {
-            return IssueTypes.Task;
+            if (issueType === IssueTypes.Bug || issueType === IssueTypes.SubBug) {
+                result = IssueTypes.Bug;
+            } else if (issueType === IssueTypes.Task || issueType === IssueTypes.SubTask) {
+                result = IssueTypes.Task;
+            } else if (issueType === IssueTypes.Story) {
+                result = IssueTypes.Story;
+            } else {
+                result = IssueTypes.Task;
+            }
         }
+        return result;
     }
 
     private async createBranch({
