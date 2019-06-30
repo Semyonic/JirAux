@@ -1,8 +1,8 @@
 {
     "name": "jiraux",
     "displayName": "JirAux",
-    "description": "List and view your issues and create Git-flow like branches from them",
-    "version": "1.0.3",
+    "description": "Extension to list,view and create Git-flow like branches from issues",
+    "version": "1.0.4",
     "author": "Semih Onay",
     "publisher": "SemihOnay",
     "engines": {
@@ -72,6 +72,24 @@
             }
         ],
         "menus": {
+            "commandPalette": [
+                {
+                    "command": "JirAux.showDescription",
+                    "when": "false"
+                },
+                {
+                    "command": "JirAux.refresh",
+                    "when": "false"
+                },
+                {
+                    "command": "JirAux.openIssue",
+                    "when": "false"
+                },
+                {
+                    "command": "JirAux.createBranch",
+                    "when": "false"
+                }
+            ],
             "view/title": [
                 {
                     "command": "JirAux.refresh",
