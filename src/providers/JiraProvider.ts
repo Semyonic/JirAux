@@ -204,25 +204,17 @@ export class JiraProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
             `cd ${focusedDir} && git fetch && git checkout -b ${branchName}`,
         );
         try {
-            switchAndCreate.stderr.on('data', async message => {
-                if (message.includes('already')) {
-                    try {
-                        await this.switchBranch(branchName);
-                        return await vscode.window.showInformationMessage(
-                            `Switched to branch ${branchName}`,
-                        );
-                    } catch (error) {
-                        vscode.window.showErrorMessage(error);
-                    }
-                } else if (message.includes('switched')) {
-                    return vscode.window.showInformationMessage(message);
-                } else {
-                    vscode.window.showErrorMessage(message);
-                }
-            });
+            switchAndCreate.stderr.on('data', message => this.parseMessages(message.trim()));
         } catch (error) {
             vscode.window.showErrorMessage(error);
         }
+    }
+
+    private parseMessages(message: string) {
+        if (message.includes('fatal' || 'error') || message.includes('undefined')) {
+            return vscode.window.showErrorMessage(message);
+        }
+        return vscode.window.showInformationMessage(message);
     }
 
     private getBranchPrefix(type: IssueTypes): BranchTypes {
