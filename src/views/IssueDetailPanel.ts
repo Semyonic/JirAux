@@ -128,11 +128,13 @@ export class IssueDetailPanel {
             </head>
             <body>
             <header>
-            <span id="status" class="badge badge-primary">Priority: ${priority.name}</span>
+            <span id="title" class="badge badge-primary">Title: ${summary}</span>
+            <br>
+            <span id="priority" class="badge badge-primary">Priority: ${priority.name}</span>
             <br>
             <span id="status" class="badge badge-primary">Status: ${status.name}</span>
             <br>
-            <span id="status" class="badge badge-primary">Due Date: ${new Date(duedate)}</span>
+            <span id="date" class="badge badge-primary">Due Date: ${new Date(duedate)}</span>
             <br>
             <!-- <div class="progress">
                 <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="${total}" style="width: ${percent}%"></div>
