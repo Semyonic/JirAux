@@ -97,6 +97,13 @@
                     "group": "navigation"
                 }
             ],
+            "view/item": [
+                {
+                    "command": "JirAux.showDescription",
+                    "when": "view == JirAux && viewItem == issue",
+                    "group": "navigation"
+                }
+            ],
             "view/item/context": [
                 {
                     "command": "JirAux.openIssue",
