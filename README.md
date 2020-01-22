@@ -6,7 +6,9 @@
 
 Simple extension to create Git-flow like branches from selected issues and view their descriptions.
 
-![JirAux](./assets/Demo.gif)
+<p align="center">
+<img src="./assets/Demo.gif">
+</p>
 
 # Features
 - [x] Create branches with automatically prefixed from task/issue types
